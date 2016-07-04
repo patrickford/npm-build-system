@@ -2,15 +2,22 @@
   "name": "npm-build-system",
   "version": "1.0.0",
   "description": "NPM Build Scripts",
+  "repository": "https://github.com/patrickford/npm-build-system",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "mkdir": "mkdir -p build",
     "clean": "rm -rf build",
     "clean:html": "rm -f build/index.html",
-    "build:css": "npm run clean:css && lessc --source-map css/index.less build/$npm_package_name.$npm_package_version.css",
-    "watch:css": "npm run build:css && chokidar 'css/**/*.less' -c 'npm run build:css'",
-    "clean:css": "rm -f build/$npm_package_name.$npm_package_version.css build/$npm_package_name.$npm_package_version.css.map",   
+    "build:css": "npm run build:css:unminified && npm run build:css:minified",
+    "watch:css": "npm run watch:css:unminified & npm run watch:css:minified",
+    "clean:css": "npm run clean:css:unminified && npm run clean:css:minified",
+    "build:css:unminified": "npm run clean:css:unminified && lessc --source-map css/index.less build/$npm_package_name.$npm_package_version.css",
+    "watch:css:unminified": "npm run build:css:unminified && chokidar 'css/**/*.(css|less)' -c 'npm run build:css:unminified'",
+    "clean:css:unminified": "rm -f build/$npm_package_name.$npm_package_version.css build/$npm_package_name.$npm_package_version.css.map",
+    "build:css:minified": "npm run clean:css:minified && lessc --clean-css --source-map css/index.less build/$npm_package_name.$npm_package_version.min.css",
+    "watch:css:minified": "npm run build:css:minified && chokidar 'css/**/*.(css|less)' -c 'npm run build:css:minified'",
+    "clean:css:minified": "rm -f build/$npm_package_name.$npm_package_version.min.css build/$npm_package_name.$npm_package_version.min.css.map",
     "watch:html": "npm run build:html && chokidar index.html -c 'npm run build:html'",
     "build:html": "npm run clean:html && cp index.html build/",
     "watch": "npm run watch:html & npm run watch:css",
@@ -20,6 +27,7 @@
   "license": "ISC",
   "devDependencies": {
     "chokidar-cli": "^1.2.0",
-    "less": "^2.7.1"
+    "less": "^2.7.1",
+    "less-plugin-clean-css": "^1.5.1"
   }
 }
