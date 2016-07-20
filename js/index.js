@@ -3,4 +3,5 @@ var makeBackgroundRed = require('./background');
 
 $(document).ready(function() {
     makeBackgroundRed();
+    console.log('hi');
 });
